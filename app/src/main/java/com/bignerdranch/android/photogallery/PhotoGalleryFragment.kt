@@ -83,8 +83,8 @@ class PhotoGalleryFragment : Fragment() {
         inflater.inflate(R.menu.fragment_photo_gallery, menu)
         val searchItem: MenuItem = menu.findItem(R.id.menu_item_search)
         val searchView = searchItem.actionView as SearchView
-        searchView.apply { setOnQueryTextListener(object :
-            SearchView.OnQueryTextListener {
+        searchView.apply {
+            setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(queryText: String): Boolean {
                 Log.d(TAG, "QueryTextSubmit: $queryText")
                 photoGalleryViewModel.fetchPhotos(queryText)
@@ -95,6 +95,18 @@ class PhotoGalleryFragment : Fragment() {
                 return false
             }
         })
+            setOnSearchClickListener {
+                searchView.setQuery(photoGalleryViewModel.searchTerm, false)
+            }
+        }
+    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.menu_item_clear -> {
+                photoGalleryViewModel.fetchPhotos("")
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
 
     }
